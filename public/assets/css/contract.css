@@ -1,0 +1,48 @@
+.ticket-container {
+    text-align: center;
+    color: #333;
+}
+
+.underlined {
+    border-bottom: 1px solid black;
+    padding: 0 10px;
+    display: inline;
+}
+
+.fw-bold {
+    font-weight: bold;
+}
+
+.text-start {
+    text-align: start !important;
+}
+
+.text-end {
+    text-align: end !important;
+}
+
+.circle-wrapper {
+    display: block;
+    width: 100%;
+    text-align: center;
+}
+
+.circle-container {
+    display: inline-block;
+    vertical-align: middle;
+    width: 50%;
+}
+
+.circle {
+    display: block;
+    width: 30px;
+    height: 30px;
+    line-height: 30px;
+    text-align: center;
+    border: 1px solid #000;
+    border-radius: 50%;
+    font-size: 12px;
+    font-weight: bold;
+    color: #000;
+    margin: 0 10px;
+}

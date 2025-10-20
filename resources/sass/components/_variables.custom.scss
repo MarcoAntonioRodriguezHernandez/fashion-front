@@ -1,0 +1,37 @@
+//
+// To make future updates easier consider overriding the global variables from _variables.bootstrap.scss and _variables.custom.scss for current demo in this file.
+// Note that this file is included first and variables defined in _variables.bootstrap.scss and _variables.custom.scss
+// are not accessible in this file but you can override any global variable as shown below:
+//
+
+// Theme colors
+// Primary colors
+$success-clarity: rgba(#50CD89, 0.2) !default;
+$success: #50CD89;
+$success-active: #47BE7D;
+$success-light: #E8FFF3;
+
+
+//role colors
+$roleReading: #daeef7 !default;
+$roleCreation: #F2E2CE !default;
+$roleWriting: #e5e5e5 !default;
+$roleNone: #ffd7d7 !default;
+
+
+$success-dark: #006AE6 !default;
+$success-active-dark: #107EFF !default;
+$success-light-dark: #172331 !default;
+$success-clarity-dark: rgba(#006AE6, 0.2) !default;
+
+// Success colors
+$primary: #000000 !default;
+$bluePrimary: #006AE6 !default;
+$primary-active: #000000 !default;
+$primary-light: #e3d8c2 !default;
+$primary-clarity: rgba(#515151, 0.2) !default;
+
+$primary-dark: #515151 !default;
+$primary-active-dark: #515151 !default;
+$primary-light-dark: #1F212A !default;
+$primary-clarity-dark: rgba(#515151, 0.2) !default;

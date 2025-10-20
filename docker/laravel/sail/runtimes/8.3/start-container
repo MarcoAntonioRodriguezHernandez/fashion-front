@@ -1,0 +1,25 @@
+#!/usr/bin/env bash
+
+if [ ! -z "$WWWUSER" ]; then
+    usermod -u $WWWUSER sail
+fi
+
+if [ ! -d /.composer ]; then
+    mkdir /.composer
+fi
+
+chmod -R ugo+rw /.composer
+
+# Fix permissions for storage/logs
+if [ -d /var/www/html/storage/logs ]; then
+    echo "Setting permissions for storage/logs..."
+    chmod -R 777 /var/www/html/storage/logs
+    chown -R ${WWWUSER:-1337}:${WWWGROUP:-1337} /var/www/html/storage/logs
+fi
+
+
+if [ $# -gt 0 ]; then
+    exec gosu $WWWUSER "$@"
+else
+    exec /usr/bin/supervisord -c /etc/supervisor/conf.d/supervisord.conf
+fi

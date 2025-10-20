@@ -1,0 +1,36 @@
+.ticket-container {
+    text-align: center;
+    color: #333;
+    font-size: 10px;
+}
+
+.underlined {
+    border-bottom: 1px solid black;
+    padding: 0 10px;
+    display: inline;
+}
+
+.fw-bold {
+    font-weight: bold;
+}
+
+.table {
+    border: 1px solid black; 
+    border-collapse: collapse;
+    border-left: none;
+    border-right: none;
+    margin: 0 auto;
+    text-align: center;
+    width: 100%;
+}
+
+.table td {
+    border: 1px solid black; 
+    border-right: none;
+    border-left: none;
+    padding: 10px;
+}
+
+.table td.center{
+    border: 1px solid black;
+}

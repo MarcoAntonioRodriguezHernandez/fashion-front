@@ -1,0 +1,51 @@
+.logo-container {
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+.logo-container span {
+    font-size: 1.5em;
+    font-weight: bold;
+}
+
+.ticket-title {
+    color: #333;
+    margin-bottom: 1.5rem;
+    font-size: 9pt;
+    text-align: center;
+    text-transform: uppercase;
+}
+
+.ticket-notes {
+    color: #666;
+    margin-bottom: 2rem;
+}
+
+.ticket-notes p {
+    margin: 0.2rem;
+}
+
+.ticket-notes ol li {
+    padding-left: -12pt;
+}
+
+.items-table {
+    border-collapse: collapse;
+    width: 100%;
+}
+
+.items-table th,
+.items-table td {
+    border-bottom: 1px solid #ddd;
+    padding: 4px;
+}
+
+.items-table tr th:nth-child(n+2),
+.items-table tr td:nth-child(n+2) {
+    text-align: right;
+}
+
+.ticket-footer {
+    margin-top: 1.5rem;
+    text-align: center;
+}

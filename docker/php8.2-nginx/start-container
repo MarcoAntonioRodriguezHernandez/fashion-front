@@ -1,0 +1,31 @@
+#!/bin/bash
+
+cd /var/www/html
+
+# Install composer dependencies
+if [ ! -d vendor ] || [ composer.lock -nt vendor ] || [ composer.json -nt vendor ]; then
+    echo "Installing/updating PHP dependencies..."
+    composer install --no-dev --optimize-autoloader
+else
+    echo "PHP dependencies are up to date."
+fi
+
+# Install npm dependencies
+if [ ! -d node_modules ] || [ package.json -nt node_modules ]; then
+    echo "Installing/updating frontend dependencies..."
+    npm install && npm run build
+else
+    echo "Frontend dependencies are up to date."
+fi
+
+# Fix permissions for storage/logs
+echo "Setting permissions..."
+chown -R www-data:www-data storage bootstrap/cache
+chmod -R ug+rwX storage bootstrap/cache
+
+php artisan config:cache
+php artisan route:cache
+php artisan view:cache
+
+echo "Starting supervisord..."
+exec /usr/bin/supervisord -c /etc/supervisor/conf.d/supervisord.conf
