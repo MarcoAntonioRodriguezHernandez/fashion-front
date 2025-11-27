@@ -294,7 +294,6 @@ const clearFilters = () => {
                                         <thead class="fs-7 text-gray-500 text-uppercase">
                                             <tr>
                                                 <th class="text-center">ID</th>
-                                                <th class="text-center">Imagen</th>
                                                 <th class="text-center">Categoría</th>
                                                 <th class="text-center">Nombre del Producto</th>
                                                 <th class="text-center">Color</th>
@@ -314,8 +313,6 @@ const clearFilters = () => {
                                                 :class="{ 'selected-item-choose': filtersToApply.items.includes(item.id) }">
 
                                                 <td>{{ item.id }}</td>
-                                                <td><img :src="item.first_image" class="rounded-3"
-                                                        :alt="item.product_name" width="100"></td>
                                                 <td class="text-center">{{ item.category_name }}</td>
                                                 <td class="text-center">{{ item.product_name }}</td>
                                                 <td>{{ item.color_name }}</td>

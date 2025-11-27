@@ -13,10 +13,11 @@
             <label class="required form-label">Color</label>
             <!--end::Label-->
             <!--begin::Input-->
-            <select id="color_id" class="form-select form-control" data-control="select2" data-placeholder="Color">
-                <option selected hidden disabled>-- Elige una opción --</option>
+            <select name="color_id" id="color_id" class="form-select form-control" data-control="select2"
+                data-placeholder="Color" onchange="handleColorSelection(this)">
+                <option selected hidden disabled>-- Elige un color --</option>
                 @foreach ($colors as $color)
-                    <option value="{{ $color->id }}" @selected(old('color_id'))>
+                    <option value="{{ $color->id }}" @selected(old('color_id') == $color->id)>
                         {{ $color->name }}
                     </option>
                 @endforeach

@@ -42,9 +42,4 @@ class Size extends Model
     {
         return $this->belongsToMany(Characteristic::class, SizeCharacteristic::class);
     }
-
-    public function marketplaceCode()
-    {
-        return $this->morphMany(MarketplaceCode::class, 'codable');
-    }
 }

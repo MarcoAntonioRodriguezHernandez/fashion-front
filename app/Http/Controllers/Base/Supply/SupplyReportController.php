@@ -71,7 +71,7 @@ class SupplyReportController extends Controller
                     'Código de Barras' => $si->item->barcode,
                     'Color' => $si->item->variant->color->name,
                     'Talla' => $si->item->variant->size->full_name,
-                    'Notas' => Str::limit($si->details, 50) ?: 'Ninguna Nota',
+                    'Notas' => Str::limit(json_encode($si->details ?? 'Ninguna Nota', JSON_UNESCAPED_UNICODE), 50),
                     'Estado' => Str::of($si->statusName)->when($si->integrity, fn($s) => $s . ': ' . $si->integrity_name),
                     '' => '',
                 ]);

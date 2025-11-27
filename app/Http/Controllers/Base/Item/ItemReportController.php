@@ -10,10 +10,6 @@ use App\Traits\Base\CreatesExcel;
 use App\Traits\Base\Item\FiltersItems;
 
 use Exception;
-use GuzzleHttp\Client;
-use GuzzleHttp\Promise;
-use GuzzleHttp\Promise\Create;
-use GuzzleHttp\Promise\Utils;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 use Symfony\Component\HttpFoundation\Response;
@@ -39,7 +35,6 @@ class ItemReportController extends Controller
 {
     use CreatesExcel, ResponseTrait, FiltersItems;
 
-    private array $drawingObjects = [];
 
     public function __construct()
     {
@@ -100,16 +95,15 @@ class ItemReportController extends Controller
 
             $data = $this->filterItemsBy($request, false);
 
-            $this->addImages($data);
-
+            // Images have been removed from the report. Ensure no image fields remain.
             $data = $data->transform(function ($row) {
-                unset($row['product_variant_id'], $row['image_url']);
+                if (is_array($row)) {
+                    unset($row['product_variant_id'], $row['image_url'], $row['Imagen']);
+                }
                 return $row;
             });
 
             $path = $this->reportExportExcel($data, $filename);
-
-            $this->config->getStylesForImageCell($path);
 
             return response()->download($path, 'inventory_report_' . date('Y-m-d_H-i-s') . '.xlsx')->deleteFileAfterSend(true);
         } catch (Exception $e) {
@@ -144,8 +138,8 @@ class ItemReportController extends Controller
         $productVariant = $item->productVariant;
         $product = $item->product;
 
+        // Image column and image_url/product_variant_id removed from the export
         $data = [
-            'Imagen' => '',
             'ID' => $item->id,
             'Codigo de barras' => $item->barcode ?? 'Sin código',
             'Sucursal' => $item->store->name,
@@ -158,8 +152,6 @@ class ItemReportController extends Controller
             'Renta' => optional($product->pricingScheme->sku_4)->price,
             'Venta' => $item->price_sale,
             'Venta Completa' => $item->price_sale,
-            'product_variant_id' => $productVariant->id,
-            'image_url' => $productVariant->productImage->src_image
         ];
 
         return $data;
@@ -167,59 +159,7 @@ class ItemReportController extends Controller
 
     protected function addImages(Collection $data): void
     {
-        // ini_set('memory_limit', '500M');
-        $client = new Client();
-        $promises = [];
-        $variantIdToRows = [];
-
-        $rowIndex = 2;
-        foreach ($data as $row) {
-            $variantId = $row['product_variant_id'];
-            $variantIdToRows[$variantId][] = $rowIndex++;
-        }
-
-        $drawingCache = [];
-
-        foreach ($variantIdToRows as $variantId => $_) {
-            $url = $data->firstWhere('product_variant_id', $variantId)['image_url'] ?? null;
-            if (!$url) continue;
-
-            $promises[$variantId] = $client
-                ->getAsync($url, ['verify' => false])
-                ->then(function ($response) use (&$drawingCache, $variantId) {
-                    $imageBytes = $response->getBody()->getContents();
-                    $imageHash = md5($imageBytes);
-
-                    if (isset($drawingCache[$imageHash])) return $drawingCache[$imageHash];
-
-                    $tempFile = tempnam(sys_get_temp_dir(), 'img_');
-                    file_put_contents($tempFile, $imageBytes);
-                    $drawing = $this->createDrawingObject($tempFile, $this->config);
-                    unlink($tempFile);
-                    $drawingCache[$imageHash] = $drawing;
-
-                    return $drawingCache[$imageHash];
-                });
-        }
-
-        unset($drawingCache);
-        $results = Promise\Utils::settle($promises)->wait();
-        // Log::info('Results count: ' . count($results));
-
-        // Insertar drawingObjects secuencialmente
-        foreach ($variantIdToRows as $variantId => $rows) {
-            $result = $results[$variantId];
-            if ($result['state'] !== 'fulfilled') continue;
-            
-            $drawing = $result['value'];
-
-            foreach ($rows as $row) {
-                $clone = clone $drawing;
-                $this->addDrawingObject($clone, 'A', $row);
-            }
-        
-        }
-        // Log::info('Memoria pico usada: ' . round(memory_get_peak_usage(true) / 1024 / 1024, 2) . ' MB');
+        return;
     }
 
 }

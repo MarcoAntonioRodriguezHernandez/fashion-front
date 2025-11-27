@@ -107,12 +107,7 @@ class Product extends Model
     {
         return $this->belongsToMany(Variant::class, 'product_variants');
     }
-
-    public function marketplaceCode()
-    {
-        return $this->morphOne(MarketplaceCode::class, 'codable');
-    }
-
+    
     public function category()
     {
         return $this->belongsTo(Category::class, 'category_id');

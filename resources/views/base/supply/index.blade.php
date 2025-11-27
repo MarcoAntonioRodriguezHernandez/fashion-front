@@ -11,12 +11,13 @@
                 <thead>
                     <tr class="text-start text-gray-500 fw-bold fs-7 text-uppercase gs-0">
                         <th class="max-w-125px">ID</th>
-                        <th class="min-w-150px">Código</th>
-                        <th class="min-w-125px">Remitente</th>
-                        <th class="min-w-125px">Fecha de Creación</th>
-                        <th class="min-w-125px">Status</th>
+                        <th class="text-center min-w-125x">Código</th>
+                        <th class="text-center min-w-125px">Remitente</th>
+                        <th class="text-center min-w-115px">Fecha de Creación</th>
+                        <th class="text-center min-w-80px">Estatus</th>
+                        <th class="text-center min-w-125px">Automática</th>
                         @permission(ModuleAliases::SUPPLY, PermissionTypes::UPDATE)
-                        <th class="min-w-125px text-start">Acciones</th>
+                            <th class="min-w-125px text-start">Acciones</th>
                         @endpermission
                     </tr>
                 </thead>
@@ -26,23 +27,27 @@
                             <td>
                                 <span class="fw-bold">{{ $supply->id }}</span>
                             </td>
-                            <td class="min-w-125px">
+                            <td class="text-center">
                                 <a href="{{ route('base.supply.show', $supply->id) }}"
                                     class="text-gray-800 text-hover-primary fs-5 fw-bold"
                                     data-kt-ecommerce-product-filter="product_id">{{ $supply->code }}</a>
                             </td>
-                            <td>
+                            <td class="text-center">
                                 <span class="fw-bold">{{ $supply->sender->full_name }}</span>
                             </td>
-                            <td>
+                            <td class="text-center min-w-auto">
                                 <span class="fw-bold">{{ $supply['shipping_date'] }}</span>
                             </td>
-                            <td class="min-w-125px">
-                                <div class="badge badge-light-{{SupplyStatuses::getColor($supply->status) }} fw-bold">
-                                {{ SupplyStatuses::getName($supply->status) }}
+                            <td class="text-center">
+                                <div class="badge badge-light-{{ SupplyStatuses::getColor($supply->status) }} fw-bold">
+                                    {{ SupplyStatuses::getName($supply->status) }}
                                 </div>
                             </td>
-                            <x-actions-btn :module="ModuleAliases::SUPPLY"  routeEdit="{{ route('base.supply.edit.view', $supply->id) }}"
+                            <td class="text-center">
+                                <span class="fw-bold">{{ $supply->is_automatic ? 'Sí' : 'No' }}</span>
+                            </td>
+                            <x-actions-btn :module="ModuleAliases::SUPPLY"
+                                routeEdit="{{ route('base.supply.edit.view', $supply->id) }}"
                                 onclickDelete="eliminar({{ $supply->id }})" />
                         </tr>
                     @endforeach

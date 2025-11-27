@@ -43,11 +43,6 @@ class Color extends Model
         return $this->hasMany(ProductImage::class,'color_id');
     }
 
-    public function marketplaceCode()
-    {
-        return $this->morphMany(MarketplaceCode::class, 'codable');
-    }
-
     public function children()
     {
         return $this->hasMany(Color::class, 'parent_color_id')->active();

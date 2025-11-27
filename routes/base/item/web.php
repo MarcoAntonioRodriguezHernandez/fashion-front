@@ -30,6 +30,7 @@ Route::delete('item/{field}', [ItemController::class, 'deleteRecord'])->name('ba
 
 Route::get('stock/add', [StockController::class, 'addStockView'])->name('base.stock.add.view');
 Route::post('stock/add', [StockController::class, 'addStock'])->name('base.stock.add');
+Route::get('stock/product/{id}/colors', [StockController::class, 'getProductColors'])->name('base.stock.product.colors');
 
 Route::get('item/card/print/{field?}', [ItemController::class, 'cardsPrint'])->name('base.item.card.print');
 Route::get('item/card/download/{token}', [ItemController::class, 'cardsDownload'])->name('base.item.card.download');
@@ -38,3 +39,5 @@ Route::post('item/mass/condition', [ItemController::class, 'massUpdateCondition'
 Route::post('item/mass/price-sale', [ItemController::class, 'massUpdatePriceSale'])->name('base.item.mass.price_sale');
 Route::post('item/mass/condition-status', [ItemController::class, 'massUpdateConditionStatus'])->name('base.item.mass.condition_status');
 Route::post('/item/can-bazar-mass', [ItemController::class, 'canBazarForMass'])->name('item.canBazarForMass');
+
+Route::get('product/{product}/edit', [ProductController::class, 'edit'])->name('product.edit');

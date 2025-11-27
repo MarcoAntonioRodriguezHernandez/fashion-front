@@ -31,6 +31,7 @@ use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\{
     Auth,
     DB,
+    Log,
 };
 use Symfony\Component\HttpFoundation\Response;
 
@@ -392,7 +393,7 @@ class SupplyTransferController extends GenericCrudProvider
                         ->dispatch();
                 }
             } catch (\Throwable $e) {
-                \Log::warning('Marketplace sync error', [
+                Log::warning('Marketplace sync error', [
                     'slug' => $slug,
                     'colors' => $colors,
                     'error' => $e->getMessage(),

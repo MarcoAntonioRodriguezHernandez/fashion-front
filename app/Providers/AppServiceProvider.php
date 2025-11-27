@@ -15,7 +15,11 @@ use Illuminate\Support\Facades\{
     View,
 };
 use App\Models\Base\Notification;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Pagination\LengthAwarePaginator;
+use Illuminate\Database\Query\Builder as QueryBuilder;
+use Illuminate\Database\Eloquent\Builder as EloquentBuilder;
+use Illuminate\Database\Eloquent\Relations\Relation;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -85,5 +89,21 @@ class AppServiceProvider extends ServiceProvider
                 ]
             );
         });
+
+        // Override de macros para convertir sum a float
+        // QueryBuilder::macro('sum', function ($column) {
+        //     $value = $this->aggregate('sum', [$column]);
+        //     return $value !== null ? (float)$value : 0.0;
+        // });
+
+        EloquentBuilder::macro('sum', function ($column) {
+            $value = $this->toBase()->sum($column);
+            return (float)$value;
+        });
+
+        // Relation::macro('sum', function ($column) {
+        //     $value = $this->getBaseQuery()->sum($column);
+        //     return (float)$value;
+        // });
     }
 }

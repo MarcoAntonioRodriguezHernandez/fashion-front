@@ -32,6 +32,11 @@ class PaymentOrderMarketplace extends Model
         'note_reason', // Additional note for the reason
     ];
 
+    protected $casts = [
+        'total' => 'float',
+        'payment' => 'float',
+    ];
+
     protected $appends = ['to_credit'];
 
     public function getToCreditAttribute()

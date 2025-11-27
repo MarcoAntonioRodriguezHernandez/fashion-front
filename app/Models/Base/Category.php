@@ -44,11 +44,6 @@ class Category extends Model
         return $this->belongsToMany(Characteristic::class);
     }
 
-    public function marketplaceCode()
-    {
-        return $this->morphMany(MarketplaceCode::class, 'codable');
-    }
-
     public function getStatusNameAttribute()
     {
         return CategoryStatuses::getName($this->status);

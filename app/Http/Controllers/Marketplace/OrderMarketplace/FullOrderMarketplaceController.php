@@ -98,7 +98,7 @@ class FullOrderMarketplaceController extends GenericCrudProvider
                 return User::select('id', 'name', 'last_name', 'email', 'photo')
                     ->clients()
                     ->where(fn($q) => $q->where('email', 'LIKE', '%' . $request->client_search . '%')
-                        ->orWhere(DB::raw('CONCAT(name, " ", last_name)'), 'LIKE', '%' . $request->client_search . '%'))
+                        ->orWhere(DB::raw("CONCAT(name, ' ', last_name)"), 'LIKE', '%' . $request->client_search . '%'))
                     ->limit(100)
                     ->get();
             });

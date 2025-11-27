@@ -122,22 +122,110 @@
             ].reduce((acc, field) => (acc[field] = {
                 validators: {
                     notEmpty: {
-                        message: '{{ __('validation.required', ['attribute' => ':attr']) }}'.replace(':attr',
-                            field)
+                        message: '{{ __('validation.required', ['attribute' => ':attr']) }}'.replace(':attr', field)
                     }
                 }
             }, acc), {});
 
             window.addEventListener('load', () => {
                 GeneralForm.init('staffAdd', validations,
-                    'Error en la validación de los campos, por favor verifique los datos e intente de nuevo.')
+                    'Error en la validación de los campos, por favor verifique los datos e intente de nuevo.'
+                );
             });
 
-            function updateProductPrices(selectElement) {
-                let selectedOption = selectElement.options[selectElement.selectedIndex];
+            const allColors = @json($data['colors']);
+
+            let productColors = [];
+
+            async function updateProductPrices(selectElement) {
+                const selectedOption = selectElement.options[selectElement.selectedIndex];
+                const productId = selectedOption.value;
 
                 document.querySelector('input[name="price_purchase"]').value = selectedOption.dataset.pricePurchase;
                 document.querySelector('input[id="price_sale"]').value = selectedOption.dataset.priceSale;
+
+                try {
+                    const response = await fetch(`/stock/product/${productId}/colors`);
+                    const data = await response.json();
+
+                    if (data.success) {
+                        productColors = data.colors;
+                    } else {
+                        productColors = [];
+                    }
+                    updateColorDropdown(productColors);
+                } catch (error) {
+                    console.error('Error al obtener colores:', error);
+                    updateColorDropdown([]);
+                }
+            }
+
+            function updateColorDropdown(colors) {
+                const colorSelect = document.getElementById('color_id');
+                if (!colorSelect) return;
+
+                colorSelect.innerHTML = '<option selected hidden disabled>-- Elige un color --</option>';
+
+                colors
+                    .filter(color => color.parent_color_id !== null) 
+                    .forEach(color => {
+                        const option = document.createElement('option');
+                        option.value = color.id;
+                        option.textContent = color.name;
+                        option.dataset.hasImage = color.has_image;
+                        colorSelect.appendChild(option);
+                    });
+            }
+
+            function handleColorSelection(selectElement) {
+                const selectedOption = selectElement.options[selectElement.selectedIndex];
+                const hasImage = selectedOption.dataset.hasImage === 'true';
+
+                if (!hasImage) {
+                    // Obtenemos el producto seleccionado
+                    const productSelect = document.querySelector('select[name="product_id"]');
+                    const productId = productSelect.value;
+
+                    Swal.fire({
+                        title: 'No hay ninguna imagen asociada con el color seleccionado',
+                        html: 'Si deseas agregarla, ve a la edición de productos.',
+                        icon: 'warning',
+                        showCancelButton: true,
+                        confirmButtonText: 'Editar Producto',
+                        cancelButtonText: 'Cancelar',
+                        confirmButtonColor: '#3085d6',
+                        cancelButtonColor: '#d33'
+                    }).then((result) => {
+                        if (result.isConfirmed) {
+                            // Redirige a la edición del producto
+                            window.location.href = `/product/${productId}/edit`;
+                        } else {
+                            selectElement.value = '';
+                        }
+                    });
+                }
+            }
+
+            function openAddVariantModal() {
+                Swal.fire({
+                    title: 'Agregar nueva variante',
+                    html: `
+                        <input type="text" id="newColorName" class="swal2-input" placeholder="Nombre del color">
+                        <input type="text" id="newColorSlug" class="swal2-input" placeholder="Slug del color">
+                    `,
+                    confirmButtonText: 'Guardar',
+                    focusConfirm: false,
+                    preConfirm: () => {
+                        const name = document.getElementById('newColorName').value;
+                        const slug = document.getElementById('newColorSlug').value;
+                        if (!name || !slug) Swal.showValidationMessage('Por favor completa ambos campos');
+                        return { name, slug };
+                    }
+                }).then(result => {
+                    if (result.isConfirmed) {
+                        Swal.fire('Guardado', 'El color ha sido agregado (simulado).', 'success');
+                    }
+                });
             }
         </script>
     </x-slot>

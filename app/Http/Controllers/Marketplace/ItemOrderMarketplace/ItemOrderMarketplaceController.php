@@ -145,8 +145,6 @@ class ItemOrderMarketplaceController extends GenericCrudProvider
 
     protected function beforeUpdate(array &$validatedData, Model $itemOrder, Request $request): ?array
     {
-        if ($itemOrder->sale_type == OrderSaleType::SALE->value)
-            throw new RuntimeException('Cannot edit sale item orders');
 
         $item = Item::findOrFail($request->item_id);
 

@@ -40,6 +40,11 @@ class Item extends Model
         'details',
     ];
 
+    protected $casts = [
+        'price_sale' => 'float',
+        'price_purchase' => 'float',
+    ];
+
     protected $with = ['productVariant'];
     protected $appends = ['is_in_transit', 'target_store_name', 'target_recipient_name'];
 
@@ -54,11 +59,6 @@ class Item extends Model
                 $item->price_sale = $price;
             }
         });
-    }
-
-    public function getVariantCodeAttribute()
-    {
-        return $this->productVariant->variant->marketplaceCode;
     }
 
     /**

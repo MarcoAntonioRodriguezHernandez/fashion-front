@@ -139,6 +139,9 @@ watch(() => props.items, (newItems) => {
 // ------------------------
 
 const root = ref(null);
+const containerClasses = computed(() => ({
+  'is-table-view': context.isTableView
+}));
 const itemInfoModal = ref(null);
 const itemMassModal = ref(null);
 const context = reactive({
@@ -490,10 +493,10 @@ const clearFilters = () => {
                 </div>
             </div>
 
-            <div :class="{ 'col-xxxl-12': isAsideVisible, 'col-xl-9 move-left': !isAsideVisible }"
+                <div :class="[{ 'col-xxxl-12': isAsideVisible, 'col-xl-9 move-left': !isAsideVisible }, containerClasses]"
                 class="d-flex flex-wrap d-grid gap-5 gap-xxl-9 w-100">
                 <!--begin::Element list-->
-                <div class="d-flex align-items-start flex-wrap gap-3" v-if="displayedItems.length > 0">
+                <div class="d-flex align-items-start flex-wrap gap-3 list-toolbar mb-6" v-if="displayedItems.length > 0">
                     <button @click="toggleAllItems" class="btn btn-primary me-2">
                         <span class="state-square" :class="{ 'bg-success': selectedItems.selectAllResults }"></span>
                         {{ selectedItems.selectAllResults ? 'Deseleccionar todos' : 'Seleccionar todos' }}
@@ -548,19 +551,19 @@ const clearFilters = () => {
                     </div>
                 </div>
 
-                <div v-if="hasAnySelection" class="w-100 mt-3 text-center">
+                <div v-if="hasAnySelection" class="w-100 mt-3 mb-3 text-center results-counter">
                     <strong>Productos seleccionados: {{ selectedCount }}</strong>
                 </div>
 
-                <div v-if="displayedItems.length > 0 && !hasAnySelection" class="w-100 mt-3 text-center">
+                <div v-if="displayedItems.length > 0 && !hasAnySelection" class="w-100 mt-3 mb-3 text-center results-counter">
                     <strong>{{ visibleCount }} productos de {{ itemsData.total }} existentes.</strong>
                 </div>
 
                 <!-- Vista de tabla -->
-                <div v-if="context.isTableView" class="card card-flush w-100 mb-5">
-                    <div class="card-body pt-3">
-                        <div class="table-responsive">
-                            <table class="table table-row-bordered table-row-dashed gy-4 align-middle fw-bold">
+                <div v-if="context.isTableView && displayedItems.length > 0" class="card card-flush w-100 mb-5 mt-6 list-card">
+                    <div class="card-body pt-3 pb-3">
+                        <div class="table-responsive list-table-wrap">
+                            <table class="table table-sm table-row-bordered table-row-dashed align-middle fw-bold list-table">
                                 <thead class="fs-7 text-gray-500 text-uppercase">
                                     <tr>
                                         <!-- NUEVA COLUMNA DE CHECKBOX -->
@@ -573,9 +576,9 @@ const clearFilters = () => {
                                         <th class="text-center">Código de barras</th>
                                         <th class="text-center">Renta</th>
                                         <th class="text-center">Venta</th>
-                                        <th class="text-center">Venta Completo</th>
-                                        <th class="text-center">Rentas</th>
-                                        <th class="text-center">Ultima Renta</th>
+                                        <th class="text-center hide-sm">Venta Completo</th>
+                                        <th class="text-center hide-sm">Rentas</th>
+                                        <th class="text-center hide-md">Ultima Renta</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -591,9 +594,8 @@ const clearFilters = () => {
 
                                         <td>{{ item.id }}</td>
                                         <td>
-                                            <img :src="item.first_image" class="rounded-3" :alt="item.product_name"
-                                                width="100" style="cursor: pointer"
-                                                @click="submitGetItemInfo(item.id)" />
+                                            <img :src="item.first_image" class="rounded-3 item-thumb" :alt="item.product_name"
+                                                style="cursor: pointer" @click="submitGetItemInfo(item.id)" />
                                         </td>
                                         <td class="text-center">{{ item.size_name }}</td>
                                         <td class="text-center">{{ item.store_name }}</td>
@@ -601,9 +603,9 @@ const clearFilters = () => {
                                         <td class="text-center">{{ item.barcode }}</td>
                                         <td class="text-center">$ {{ item.prices_rent['4'].toFixed(2) }}</td>
                                         <td class="text-center">$ {{ item.price_sale.toFixed(2) }}</td>
-                                        <td class="text-center">$ {{ item.full_price.toFixed(2) }}</td>
-                                        <td class="text-center">{{ item.amount_rents }}</td>
-                                        <td class="text-center">{{ item.last_rent_date || 'N/A' }}</td>
+                                        <td class="text-center hide-sm">$ {{ item.full_price.toFixed(2) }}</td>
+                                        <td class="text-center hide-sm">{{ item.amount_rents }}</td>
+                                        <td class="text-center hide-md">{{ item.last_rent_date || 'N/A' }}</td>
                                     </tr>
                                 </tbody>
                             </table>
@@ -713,4 +715,110 @@ const clearFilters = () => {
     width: 1em;
     height: 2em;
 }
+
+.is-table-view .list-toolbar {
+  margin-bottom: .5rem;
+}
+
+.is-table-view .results-counter {
+  margin-top: .25rem !important;
+  margin-bottom: .25rem !important;
+}
+
+.is-table-view .list-card {
+  margin-top: .25rem;
+}
+
+.is-table-view .list-table-wrap {
+  overflow-x: auto;
+}
+
+.is-table-view .list-table th,
+.is-table-view .list-table td {
+  padding: .45rem .6rem !important;
+  vertical-align: middle;
+  white-space: nowrap;
+}
+
+.is-table-view .item-thumb {
+  width: 56px;
+  height: auto;
+}
+
+@media (max-width: 992px) {
+  .is-table-view .hide-md { display: none; }
+  .is-table-view .item-thumb { width: 48px; }
+}
+
+@media (max-width: 768px) {
+  .is-table-view .hide-sm { display: none; }
+  .is-table-view .list-table th,
+  .is-table-view .list-table td { padding: .35rem .5rem !important; }
+}
+
+.is-table-view.d-grid {
+  row-gap: .75rem !important;
+}
+
+.is-table-view {
+  display: block !important;
+}
+
+.is-table-view.list-gap-override,
+.is-table-view.d-grid,
+.is-table-view.d-flex {
+  row-gap: 0 !important;
+  gap: 0 !important;
+}
+
+.is-table-view .list-toolbar {
+  margin-top: .25rem;
+  margin-bottom: .5rem;
+}
+
+.is-table-view .results-counter {
+  margin: .25rem 0 !important;
+}
+
+.is-table-view .list-card {
+  margin-top: 0;
+  margin-bottom: .75rem;
+  align-self: start;
+  height: auto;
+  min-height: 0;
+}
+
+.is-table-view .list-card .card-body {
+  padding-top: .75rem;
+  padding-bottom: .75rem;
+  height: auto;
+  min-height: 0;
+}
+
+.is-table-view .list-table-wrap { overflow-x: auto; }
+.is-table-view .list-table th,
+.is-table-view .list-table td {
+  padding: .45rem .6rem !important;
+  vertical-align: middle;
+  white-space: nowrap;
+}
+.is-table-view .item-thumb { width: 56px; height: auto; }
+
+@media (max-width: 992px) {
+  .is-table-view .hide-md { display: none; }
+  .is-table-view .item-thumb { width: 48px; }
+}
+
+@media (max-width: 768px) {
+  .is-table-view .hide-sm { display: none; }
+  .is-table-view .list-table th,
+  .is-table-view .list-table td { padding: .35rem .5rem !important; }
+}
+
+.is-table-view .card,
+.is-table-view .card .card-body {
+  min-height: 0 !important;
+}
+
+.is-table-view.list-tight > * { margin-top: 0 !important; }
 </style>

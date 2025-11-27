@@ -37,7 +37,6 @@ use Database\Seeders\Base\{
     CountrySeeder,
     EventSeeder,
     EventTypeSeeder,
-    MarketplaceCodeSeeder,
     NotificationSeeder,
     SupplySeeder,
     SuppliedItemSeeder,
@@ -119,7 +118,6 @@ class DatabaseSeeder extends Seeder
                 SupplyTransferSeeder::class,
                 SuppliedItemSeeder::class,
                 NotificationSeeder::class,
-                MarketplaceCodeSeeder::class,
                 CouponSeeder::class,
                 ClientCreditSeeder::class,
                 

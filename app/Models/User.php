@@ -109,10 +109,10 @@ class User extends Authenticatable implements MustVerifyEmail, JWTSubject
 
     /**
      * Determine if this user has any of the requested permissions
-     * 
+     *
      * @param int|string $moduleKey The id or slug of the module
      * @param array<string> $permissions The requested permissions. One of read, update, or create
-     * 
+     *
      * @return bool true if the user has any of these permissions, or false otherwise
      */
     public function hasAnyPermission(int|string|ModuleAliases $moduleKey, PermissionTypes ...$permissions)
@@ -125,7 +125,7 @@ class User extends Authenticatable implements MustVerifyEmail, JWTSubject
             $moduleKey = $moduleKey->value;
         }
 
-        $module = Module::where('slug', $moduleKey)->orWhere('id', $moduleKey)->first();
+        $module = Module::where('slug', $moduleKey)->first();
 
         if ($module == null) {
             return true;
@@ -159,7 +159,7 @@ class User extends Authenticatable implements MustVerifyEmail, JWTSubject
             }
             return $role;
         }, $roles);
-        
+
         $userRoles = $this->roles()->pluck('slug')->toArray();
         return !empty(array_intersect($roles, $userRoles));
     }

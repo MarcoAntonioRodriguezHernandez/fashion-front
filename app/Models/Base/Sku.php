@@ -22,11 +22,6 @@ class Sku extends Model
         return $this->hasMany(PricingScheme::class, 'sku_' . $this->duration . '_id');
     }
 
-    Public function marketplaceCode()
-    {
-        return $this->morphMany(MarketplaceCode::class, 'codable');
-    }
-
     public function product()
     {
         return $this->belongsTo(Product::class, 'sku', 'sku');

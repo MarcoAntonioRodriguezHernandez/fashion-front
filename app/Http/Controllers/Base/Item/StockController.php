@@ -52,11 +52,11 @@ class StockController extends Controller
 
     public function addStockView()
     {
-        $products = Product::select(['id','name','title','slug', 'price_purchase','full_price']);
-        $variants = Variant::select('size_id','color_id','status');
-        $colors = Color::select(['id','name','hexadecimal','status'])->active()->onlyChildren()->get();
-        $sizes = Size::select(['id','name']);
-        $users = User::select(['name','last_name'])->whereHas('employeeDetail')
+        $products = Product::all();
+        $variants = Variant::all();
+        $colors = Color::active()->onlyChildren()->get();
+        $sizes = Size::all();
+        $users = User::whereHas('employeeDetail')
             ->orWhereHas('clientDetail')
             ->get();
         return $this->makeResponse([
@@ -172,5 +172,29 @@ class StockController extends Controller
             'title' => $product->title,
             'product_image_id' => $product->images()->where('color_id', Variant::find($variant->id)->color_id)->first()?->id ?? $product->images()->first()?->id,
         ]);
+    }
+
+    public function getProductColors($productId)
+    {
+        try {
+            $productImages = Product::findOrFail($productId)->images;
+
+            $imageColorIds = $productImages->pluck('color_id')->unique()->toArray();
+
+            // Obtener solo colores hijos
+            $childColors = Color::whereNotNull('parent_color_id')->get();
+
+            $colors = $childColors->map(fn($color) => [
+                'id' => $color->id,
+                'name' => $color->name,
+                'slug' => $color->slug,
+                'parent_color_id' => $color->parent_color_id,
+                'has_image' => in_array($color->id, $imageColorIds),
+            ]);
+
+            return response()->json(['success' => true, 'colors' => $colors]);
+        } catch (Exception $e) {
+            return response()->json(['success' => false, 'message' => 'Error al obtener colores.']);
+        }
     }
 }
